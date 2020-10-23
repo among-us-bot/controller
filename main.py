@@ -1,13 +1,12 @@
 """
 Created by Epic at 9/5/20
 """
+from custom_types import ExtendedClient
 
-import speedcord
-from speedcord.http import Route
 from os import environ as env
 from logging import basicConfig, DEBUG
 
-client = speedcord.Client(intents=512)
+client = ExtendedClient(prefix="", intents=512)
 basicConfig(level=DEBUG)
 
 client.token = env["TOKEN"]

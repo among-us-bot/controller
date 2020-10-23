@@ -1,1 +1,2 @@
 speedcord==0.1.83
+celery-pool-asyncio==0.2.0
