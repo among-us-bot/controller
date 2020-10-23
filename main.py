@@ -6,7 +6,7 @@ from custom_types import ExtendedClient
 from os import environ as env
 from logging import basicConfig, DEBUG
 
-client = ExtendedClient(prefix="", intents=512)
+client = ExtendedClient(default_prefix="/", intents=512)
 basicConfig(level=DEBUG)
 
 client.token = env["TOKEN"]

@@ -9,13 +9,13 @@ from speedcord.exceptions import InvalidToken, Unauthorized
 
 
 class ExtendedClient(Client):
-    def __init__(self, prefix, intents: int):
-        self.prefix = prefix
+    def __init__(self, default_prefix, intents: int):
+        self.default_prefix = default_prefix
         self.cog_manager = CogManager(self)
         super().__init__(intents)
 
     async def get_prefix(self, guild):
-        return "-"
+        return self.default_prefix
 
     async def connect(self):
         """
