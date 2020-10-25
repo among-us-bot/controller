@@ -9,5 +9,7 @@ from logging import basicConfig, DEBUG
 client = ExtendedClient(default_prefix="/", intents=512)
 basicConfig(level=DEBUG)
 
+client.cog_manager.register_cog("about")
+
 client.token = env["TOKEN"]
 client.run()

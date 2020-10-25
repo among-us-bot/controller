@@ -1,7 +1,7 @@
 """
 Created by Epic at 10/22/20
 """
-from manager import CogManager
+from cog_manager import CogManager
 
 from speedcord.client import Client
 from speedcord.shard import DefaultShard
@@ -71,3 +71,24 @@ class CustomShard(DefaultShard):
                 }
             }
         })
+
+
+class CogType:
+    def __init__(self, client: ExtendedClient):
+        self.client = client
+        for attr_name in dir(self):
+            func = getattr(self, attr_name)
+            command_syntax = getattr(func, "__command_syntax__", None)
+            if command_syntax is None:
+                continue
+            self.client.cog_manager.register_command(func, command_syntax)
+
+    @staticmethod
+    def command(command_syntax=None):
+        def inner(func):
+            nonlocal command_syntax
+            if command_syntax is None:
+                command_syntax = func.__name__
+            func.__command_syntax__ = command_syntax
+
+        return inner
