@@ -13,7 +13,8 @@ class About(CogType):
 
     @CogType.command("about")
     async def about(self, ctx):
-        await ctx.send(content="Hello world!")
+        await ctx.send(content="AQue is a bot to manage your among us matchmaking servers easily!\n"
+                               "Join https://discord.gg/tyqNFuU if you want it for yourself!")
 
 
 def setup(bot: ExtendedClient):
