@@ -10,9 +10,9 @@ from speedcord.exceptions import InvalidToken, Unauthorized
 
 class ExtendedClient(Client):
     def __init__(self, default_prefix, intents: int):
+        super().__init__(intents)
         self.default_prefix = default_prefix
         self.cog_manager = CogManager(self)
-        super().__init__(intents)
 
     async def get_prefix(self, guild):
         return self.default_prefix
@@ -90,5 +90,6 @@ class CogType:
             if command_syntax is None:
                 command_syntax = func.__name__
             func.__command_syntax__ = command_syntax
+            return func
 
         return inner

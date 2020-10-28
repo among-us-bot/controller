@@ -10,9 +10,10 @@ class About(CogType):
         self.bot = bot
 
         super().__init__(bot)
-    @CogType.command()
+
+    @CogType.command("about")
     async def about(self, ctx):
-        await ctx.send("Hello world!")
+        await ctx.send(content="Hello world!")
 
 
 def setup(bot: ExtendedClient):
