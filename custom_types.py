@@ -23,6 +23,7 @@ class ExtendedClient(Client):
         """
         Connects to discord and spawns shards. Start has to be called first!
         """
+        await self.workers.start()
         if self.token is None:
             raise InvalidToken
 
