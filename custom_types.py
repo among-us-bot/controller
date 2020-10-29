@@ -14,7 +14,7 @@ class ExtendedClient(Client):
         super().__init__(intents)
         self.default_prefix = default_prefix
         self.cog_manager = CogManager(self)
-        self.workers = WorkerUtil()
+        self.workers = WorkerUtil(self)
 
     async def get_prefix(self, guild):
         return self.default_prefix

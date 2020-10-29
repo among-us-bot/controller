@@ -5,10 +5,10 @@ from speedcord.http import HttpClient, Route
 from aiohttp import ClientSession
 from logging import getLogger
 from asyncio import Event, get_event_loop
-from speedcord import __version__ as speedcord_version
+from speedcord import __version__ as speedcord_version, Client
 from os import environ as env
-from ujson import loads
 from random import choice
+from math import ceil
 
 
 class WorkerHttp(HttpClient):
@@ -44,12 +44,15 @@ class WorkerHttp(HttpClient):
 
 
 class WorkerUtil:
-    def __init__(self):
+    def __init__(self, client: Client):
         with open("worker_names.txt") as f:
             self.worker_names = f.readlines()
+        self.client = client
         self.tokens = env["WORKER_TOKENS"].split(" ")
-        self.worker_counts = loads(env["WORKER_COUNTS"])
+        self.worker_counts = {}
+        self.members_per_worker = int(env["MEMBERS_PER_WORKER"])
         self.http = WorkerHttp()
+        self.logger = getLogger("workers.manager")
 
         self.token_to_worker_name = {}
         self.worker_name_to_token = {}
@@ -57,6 +60,9 @@ class WorkerUtil:
             worker_name = self.worker_names[index]
             self.token_to_worker_name[token] = worker_name
             self.worker_name_to_token[worker_name] = token
+
+        # Handlers
+        self.client.event_dispatcher.register("GUILD_CREATE", self.on_guild_create)
 
     async def request(self, guild_id: int, route: Route, **kwargs):
         selected_tokens = self.tokens[:self.worker_counts[guild_id]]
@@ -66,3 +72,8 @@ class WorkerUtil:
         logger = getLogger(f"workers.{worker_name}")
         logger.debug(f"{route.method} {route.path}")
         return await self.http.request(route, **kwargs)
+
+    async def on_guild_create(self, guild, shard):
+        worker_count = ceil(guild["member_count"] / self.members_per_worker)
+        self.worker_counts[guild["id"]] = worker_count
+        self.logger.debug(f"{guild['name']} is now using {worker_count} workers!")
