@@ -79,9 +79,12 @@ class CogType:
         for attr_name in dir(self):
             func = getattr(self, attr_name)
             command_syntax = getattr(func, "__command_syntax__", None)
-            if command_syntax is None:
-                continue
-            self.client.cog_manager.register_command(func, command_syntax)
+            if command_syntax is not None:
+                self.client.cog_manager.register_command(func, command_syntax)
+
+            event_name = getattr(func, "__event_name__", None)
+            if event_name is not None:
+                self.client.event_dispatcher.register(event_name, func)
 
     @staticmethod
     def command(command_syntax=None):
@@ -90,6 +93,17 @@ class CogType:
             if command_syntax is None:
                 command_syntax = func.__name__
             func.__command_syntax__ = command_syntax
+            return func
+
+        return inner
+
+    @staticmethod
+    def event(event_name):
+        def inner(func):
+            nonlocal event_name
+            if event_name is None:
+                event_name = func.__name__[2:]
+            func.__event_name__ = event_name
             return func
 
         return inner

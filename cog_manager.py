@@ -1,7 +1,7 @@
 """
 Created by Epic at 10/22/20
 """
-#from .custom_types import ExtendedClient as Client
+# from .custom_types import ExtendedClient as Client
 from speedcord import Client
 from speedcord.ext.typing.context import MessageContext
 from importlib import import_module
@@ -16,8 +16,8 @@ class CommandContext:
         self.message = MessageContext(client, self.message_data)
         self.args = args
 
-    async def send(self, **kwargs):
-        await self.message.send(**kwargs)
+    async def send(self, content=None, **kwargs):
+        await self.message.send(content=content, allowed_mentions={"parse": []}, **kwargs)
 
 
 class CogManager:
@@ -53,5 +53,3 @@ class CogManager:
             await command(context)
             return
         self.logger.debug("Unknown command!")
-
-
