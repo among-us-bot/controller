@@ -98,13 +98,13 @@ class WorkerUtil:
             await worker.connect()
             self.workers.append(worker)
 
-    def get_worker_for_guild(self, guild_id: int) -> Client:
+    def get_worker_for_guild(self, guild_id: str) -> Client:
         worker_count = self.worker_counts[guild_id]
         worker_pool_for_this_guild = self.workers[:worker_count]
         worker = choice(worker_pool_for_this_guild)
         return worker
 
-    async def request(self, guild_id: int, route: Route, **kwargs):
+    async def request(self, guild_id: str, route: Route, **kwargs):
         worker = self.get_worker_for_guild(guild_id)
         return await worker.http.request(route, **kwargs)
 

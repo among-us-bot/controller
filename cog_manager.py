@@ -1,8 +1,9 @@
 """
 Created by Epic at 10/22/20
 """
-# from .custom_types import ExtendedClient as Client
+#from .custom_types import ExtendedClient as Client
 from speedcord import Client
+from speedcord.http import Route
 from speedcord.ext.typing.context import MessageContext
 from importlib import import_module
 from logging import getLogger
@@ -10,14 +11,20 @@ from re import compile, Pattern
 
 
 class CommandContext:
-    def __init__(self, message: dict, client, args):
+    def __init__(self, message: dict, client: Client, args):
         self.client = client
         self.message_data = message
         self.message = MessageContext(client, self.message_data)
         self.args = args
 
     async def send(self, content=None, **kwargs):
-        await self.message.send(content=content, allowed_mentions={"parse": []}, **kwargs)
+        route = Route("POST", "/channels/{channel_id}/messages", channel_id=self.message.channel_id,
+                      guild_id=self.message.guild_id)
+        kwargs["content"] = content
+        return await self.request(route, json=kwargs)
+
+    async def request(self, *args, **kwargs):
+        return await self.client.workers.request(self.message.guild_id, *args, **kwargs)
 
 
 class CogManager:
@@ -51,5 +58,6 @@ class CogManager:
                 continue
             context = CommandContext(message, self.client, match.groups())
             await command(context)
+            self.logger.debug("Processing command")
             return
         self.logger.debug("Unknown command!")
