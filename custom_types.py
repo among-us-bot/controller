@@ -2,6 +2,7 @@
 Created by Epic at 10/22/20
 """
 from cog_manager import CogManager
+from workers import WorkerUtil
 
 from speedcord.client import Client
 from speedcord.shard import DefaultShard
@@ -13,6 +14,7 @@ class ExtendedClient(Client):
         super().__init__(intents)
         self.default_prefix = default_prefix
         self.cog_manager = CogManager(self)
+        self.workers = WorkerUtil()
 
     async def get_prefix(self, guild):
         return self.default_prefix
