@@ -15,10 +15,13 @@ class Debug(CogType):
         output = ""
         output += f"Guild workers: {self.bot.workers.worker_counts[ctx.message.guild_id]}/" \
                   f"{len(self.bot.workers.workers)}\n"
-        for worker in self.bot.workers.workers:
-            output += f"{worker.worker_name} [(Invite)](https://discord.com/api/oauth2/authorize?" \
+        worker_count = self.bot.workers.worker_counts[ctx.message.guild_id] - 1
+        for worker_id, worker in enumerate(self.bot.workers.workers):
+            output += f"{'~~' if worker_id > worker_count else ''}" \
+                      f"{worker.worker_name} [(Invite)](https://discord.com/api/oauth2/authorize?" \
                       f"client_id={worker.user_id}&" \
-                      f"scope=bot)\n"
+                      f"scope=bot)" \
+                      f"{'~~' if worker_id > worker_count else ''}\n"
         return output
 
 
