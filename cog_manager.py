@@ -52,6 +52,7 @@ class CogManager:
         content_without_prefix = message["content"][len(prefix):]
 
         command_syntax: Pattern
+        self.logger.debug(content_without_prefix)
         for command_syntax, command in self.commands:
             match = command_syntax.fullmatch(content_without_prefix)
             if match is None:

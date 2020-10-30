@@ -12,8 +12,10 @@ log = getLogger()
 log.setLevel(DEBUG)
 basicConfig(log)
 #getLogger("speedcord").setLevel(WARNING)
+
 client.cog_manager.register_cog("about")
 client.cog_manager.register_cog("debug")
+client.cog_manager.register_cog("admin")
 
 client.token = env["TOKEN"]
 client.run()
