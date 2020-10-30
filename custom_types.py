@@ -10,6 +10,7 @@ from speedcord.shard import DefaultShard
 from speedcord.exceptions import InvalidToken, Unauthorized
 from pymongo import MongoClient
 from os import environ as env
+from logging import getLogger
 
 
 class ExtendedClient(Client):
@@ -105,17 +106,18 @@ class CustomShard(DefaultShard):
 
 
 class CogType:
-    def __init__(self, client: ExtendedClient):
-        self.client = client
+    def __init__(self, bot: ExtendedClient):
+        self.bot = bot
+        self.logger = getLogger(self.__module__)
         for attr_name in dir(self):
             func = getattr(self, attr_name)
             command_syntax = getattr(func, "__command_syntax__", None)
             if command_syntax is not None:
-                self.client.cog_manager.register_command(func, command_syntax)
+                self.bot.cog_manager.register_command(func, command_syntax)
 
             event_name = getattr(func, "__event_name__", None)
             if event_name is not None:
-                self.client.event_dispatcher.register(event_name, func)
+                self.bot.event_dispatcher.register(event_name, func)
 
     @staticmethod
     def command(command_syntax=None):
