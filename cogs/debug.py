@@ -6,10 +6,6 @@ from cog_manager import CommandContext
 
 
 class Debug(CogType):
-    def __init__(self, bot: ExtendedClient):
-        self.worker_perms = 285215760
-        super().__init__(bot)
-
     @CogType.command("debug")
     async def debug(self, ctx: CommandContext):
         debug_info = await self.get_debug_info(ctx)
@@ -22,7 +18,6 @@ class Debug(CogType):
         for worker in self.bot.workers.workers:
             output += f"{worker.worker_name} [(Invite)](https://discord.com/api/oauth2/authorize?" \
                       f"client_id={worker.user_id}&" \
-                      f"permissions={self.worker_perms}&" \
                       f"scope=bot)\n"
         return output
 
