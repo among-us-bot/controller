@@ -8,6 +8,8 @@ from payloads import Payloads
 from speedcord.client import Client
 from speedcord.shard import DefaultShard
 from speedcord.exceptions import InvalidToken, Unauthorized
+from pymongo import MongoClient
+from os import environ as env
 
 
 class ExtendedClient(Client):
@@ -17,9 +19,33 @@ class ExtendedClient(Client):
         self.cog_manager = CogManager(self)
         self.workers = WorkerUtil(self)
         self.payloads = Payloads()
+        self.config_cache = {}
 
-    async def get_prefix(self, guild):
-        return self.default_prefix
+        self.mongo_client = MongoClient(env["DATABASE_HOST"])
+        self.database = self.mongo_client[env["DATABASE_DB"]]
+        self.config_table = self.database["guild_config"]
+
+    async def get_prefix(self, guild_id: str):
+        config = self.get_config(guild_id)
+        return config.get("prefix") or self.default_prefix
+
+    def get_config(self, guild_id: str):
+        guild_id = int(guild_id)
+        config = self.config_cache.get(guild_id)
+        if config is None:
+            # Fetch the config
+            config = self.config_table.find_one({"_id": guild_id}) or {}
+            self.config_cache[guild_id] = config
+        return config
+
+    def update_config(self, guild_id: int, changes: dict):
+        if guild_id in self.config_cache.keys():
+            del self.config_cache[guild_id]
+        if self.config_table.find_one({"_id"}) is None:
+            changes["_id"] = guild_id
+            self.config_table.insert_one(changes)
+            return
+        self.config_table.update_one({"_id": guild_id}, {"$set": changes})
 
     async def connect(self):
         """
