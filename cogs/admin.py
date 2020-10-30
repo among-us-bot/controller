@@ -32,7 +32,6 @@ class Admin(CogType):
         guild_id = str(ctx.args[0])
         worker_count = int(ctx.args[1])
         self.bot.workers.worker_counts[guild_id] = worker_count
-        self.logger.debug(self.bot.workers.worker_counts)
 
         await ctx.send("Updated worker count!")
 
