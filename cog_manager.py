@@ -1,7 +1,7 @@
 """
 Created by Epic at 10/22/20
 """
-#from .custom_types import ExtendedClient as Client
+# from .custom_types import ExtendedClient as Client
 from speedcord import Client
 from speedcord.http import Route
 from speedcord.ext.typing.context import MessageContext
@@ -17,14 +17,14 @@ class CommandContext:
         self.message = MessageContext(client, self.message_data)
         self.args = args
 
+    async def request(self, *args, **kwargs):
+        return await self.client.workers.request(self.message.guild_id, *args, **kwargs)
+
     async def send(self, content=None, **kwargs):
         route = Route("POST", "/channels/{channel_id}/messages", channel_id=self.message.channel_id,
                       guild_id=self.message.guild_id)
         kwargs["content"] = content
         return await self.request(route, json=kwargs)
-
-    async def request(self, *args, **kwargs):
-        return await self.client.workers.request(self.message.guild_id, *args, **kwargs)
 
 
 class CogManager:
