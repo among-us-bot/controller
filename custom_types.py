@@ -101,7 +101,7 @@ class CogType:
         return inner
 
     @staticmethod
-    def event(event_name):
+    def event(event_name=None):
         def inner(func):
             nonlocal event_name
             if event_name is None:

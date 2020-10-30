@@ -44,7 +44,9 @@ class CustomShard(DefaultShard):
 class WorkerClient(Client):
     def __init__(self, worker_name, *args, **kwargs):
         self.worker_name = worker_name
+        self.user_id = None
         super().__init__(*args, **kwargs)
+        self.event_dispatcher.register("READY", self.handle_ready)
 
     async def connect(self):
         """
@@ -71,6 +73,9 @@ class WorkerClient(Client):
             self.shards.append(shard)
         self.connected.set()
         self.logger.info("All shards connected!")
+
+    async def handle_ready(self, data, shard):
+        self.user_id = data["user"]["id"]
 
 
 class WorkerUtil:

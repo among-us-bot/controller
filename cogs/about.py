@@ -18,7 +18,6 @@ class About(CogType):
     async def about(self, ctx: CommandContext):
         r = await ctx.send("AQue is a bot to manage your among us matchmaking servers easily!\n"
                            "Join https://discord.gg/tyqNFuU if you want it for yourself!")
-        self.logger.debug(await r.text())
 
 
 def setup(bot: ExtendedClient):
