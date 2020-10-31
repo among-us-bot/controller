@@ -17,6 +17,7 @@ cogs = [
     "about",
     "debug",
     "admin",
+    "config",
     "scale_alert"
 ]
 
