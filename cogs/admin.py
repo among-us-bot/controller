@@ -20,7 +20,7 @@ def owner_check(func):
 
 
 class Admin(CogType):
-    @CogType.command("force-workers (\\d+) (\\d+)")
+    @CogType.command("admin force-workers (\\d+) (\\d+)")
     @owner_check
     async def force_workers(self, ctx: CommandContext):
         guild_id = str(ctx.args[0])
