@@ -1,7 +1,11 @@
 """
 Created by Epic at 10/29/20
 """
-from speedcord import Client
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from custom_types import ExtendedClient as Client
+else:
+    from speedcord import Client
 from speedcord.exceptions import InvalidToken, Unauthorized
 from speedcord.http import Route, HttpClient
 from speedcord.shard import DefaultShard
@@ -115,6 +119,10 @@ class WorkerUtil:
 
     async def on_guild_create(self, guild, shard):
         worker_count = ceil(guild["member_count"] / self.members_per_worker)
+        config = self.client.get_config(guild["id"])
+        config_worker_count = config.get("worker-count", None)
+        if config_worker_count is not None:
+            worker_count = config_worker_count
         if worker_count > len(self.tokens):
             worker_count = len(self.tokens)
         self.worker_counts[guild["id"]] = worker_count
