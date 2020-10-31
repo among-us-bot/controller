@@ -6,7 +6,7 @@ from custom_types import CogType, ExtendedClient
 from asyncio import sleep
 
 
-class About(CogType):
+class ScaleAlert(CogType):
     async def process_scaled_bot(self, guild_id: str):
         guild_config = self.bot.get_config(guild_id)
         if guild_config.get("alerts-channel") is None:
@@ -29,4 +29,4 @@ class About(CogType):
 
 
 def setup(bot: ExtendedClient):
-    About(bot)
+    ScaleAlert(bot)
