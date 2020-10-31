@@ -3,5 +3,5 @@ frost
 dragon
 titan
 thanos
-orc
+vco
 dwarf
