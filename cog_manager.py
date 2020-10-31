@@ -1,8 +1,11 @@
 """
 Created by Epic at 10/22/20
 """
-# from .custom_types import ExtendedClient as Client
-from speedcord import Client
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from .custom_types import ExtendedClient as Client
+else:
+    from speedcord import Client
 from speedcord.http import Route
 from speedcord.ext.typing.context import MessageContext
 from importlib import import_module
