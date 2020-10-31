@@ -20,7 +20,7 @@ class About(CogType):
         await self.bot.http.request(*args, **kwargs)
 
     @CogType.event("READY")
-    async def handle_scale_alerts(self):
+    async def handle_scale_alerts(self, data, shard):
         await sleep(10)  # Good delay for all workers to connect
         for guild_id, worker_count in self.bot.workers.worker_counts.items():
             has_scale_changed = self.bot.has_scale_changed(guild_id, worker_count)
