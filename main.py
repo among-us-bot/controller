@@ -13,9 +13,15 @@ log.setLevel(DEBUG)
 basicConfig(log)
 #getLogger("speedcord").setLevel(WARNING)
 
-client.cog_manager.register_cog("about")
-client.cog_manager.register_cog("debug")
-client.cog_manager.register_cog("admin")
+cogs = [
+    "about",
+    "debug",
+    "admin",
+    "scale_alert"
+]
+
+for cog in cogs:
+    client.cog_manager.register_cog(cog)
 
 client.token = env["TOKEN"]
 client.run()
