@@ -115,5 +115,7 @@ class WorkerUtil:
 
     async def on_guild_create(self, guild, shard):
         worker_count = ceil(guild["member_count"] / self.members_per_worker)
+        if worker_count > len(self.tokens):
+            worker_count = len(self.tokens)
         self.worker_counts[guild["id"]] = worker_count
         self.logger.debug(f"{guild['name']} is now using {worker_count} workers!")
