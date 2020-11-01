@@ -10,8 +10,6 @@ from speedcord.http import Route
 def staff_check(func):
     async def inner(_, ctx: CommandContext):
         guild_config = ctx.client.get_config(ctx.message.guild_id)
-        print(type(ctx.message.guild_id))
-        print(guild_config)
         if str(guild_config.get("config-role")) in ctx.message.member["roles"]:
             await func(_, ctx)
         else:
@@ -62,6 +60,12 @@ class Config(CogType):
         matchmaking_types[channel_id] = matchmaking_data
         self.bot.update_config(ctx.message.guild_id, {"matchmaking-types": matchmaking_types})
         await ctx.send("Created a matchmaking category!")
+
+    @CogType.command("config set waiting-vc (\\d+)")
+    @staff_check
+    async def set_waiting_vc(self, ctx: CommandContext):
+        self.bot.update_config(ctx.message.guild_id, {"matchmaking-waiting-vc": ctx.args[0]})
+        await ctx.send("Waiting VC updated!")
 
 
 def setup(bot: ExtendedClient):
