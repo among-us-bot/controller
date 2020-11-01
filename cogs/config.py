@@ -50,7 +50,7 @@ class Config(CogType):
         response = await ctx.request(route, json={
             "name": matchmaking_type,
             "parent_id": config["matchmaking-category"],
-            "type": 0
+            "type": 2
         })
         data = await response.json()
         channel_id = data["id"]
