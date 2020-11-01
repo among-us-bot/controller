@@ -3,6 +3,7 @@ Created by Epic at 11/1/20
 """
 from custom_types import CogType, ExtendedClient
 
+
 class Queue(CogType):
     def __init__(self, bot):
         super().__init__(bot)
