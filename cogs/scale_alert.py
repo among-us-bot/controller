@@ -26,6 +26,7 @@ class ScaleAlert(CogType):
             has_scale_changed = self.bot.has_scale_changed(guild_id, worker_count)
             if has_scale_changed:
                 await self.process_scaled_bot(guild_id)
+        self.logger.debug("Processed scale updates")
 
 
 def setup(bot: ExtendedClient):

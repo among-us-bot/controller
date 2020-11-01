@@ -49,8 +49,12 @@ class ExtendedClient(Client):
         self.config_table.update_one({"_id": guild_id}, {"$set": changes})
 
     def has_scale_changed(self, guild_id: str, current_scale_count: int):
-        if self.last_scale_table.find_one({"_id": int(guild_id)})["scale"] > current_scale_count:
-            self.last_scale_table.update_one({"_id": int(guild_id)}, {"$set": {"scale": current_scale_count}})
+        current_scale_data = self.last_scale_table.find_one({"_id": guild_id})
+        if current_scale_data is None:
+            self.last_scale_table.insert_one({"_id": guild_id, "scale": current_scale_count})
+            return
+        if current_scale_data["scale"] > current_scale_count:
+            self.last_scale_table.update_one({"_id": guild_id}, {"$set": {"scale": current_scale_count}})
             return True
         return False
 
