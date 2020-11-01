@@ -3,7 +3,7 @@ Created by Epic at 11/1/20
 """
 from custom_types import CogType, ExtendedClient
 
-class MoveToQueue(CogType):
+class Queue(CogType):
     def __init__(self, bot):
         super().__init__(bot)
         self.loop = self.bot.loop
@@ -43,4 +43,4 @@ class MoveToQueue(CogType):
 
 
 def setup(bot: ExtendedClient):
-    MoveToQueue(bot)
+    Queue(bot)
