@@ -29,13 +29,6 @@ class Admin(CogType):
 
         await ctx.send("Updated worker count!")
 
-    @CogType.command("admin create-guild (\\d+)")
-    @owner_check
-    async def create_guild(self, ctx: CommandContext):
-        guild_id = str(ctx.args[0])
-        self.bot.last_scale_table.insert_one({"_id": guild_id, "scale": self.bot.workers.worker_counts[guild_id]})
-        await ctx.send("Guild configs created!")
-
     @CogType.command("admin set-config-role (\\d+)")
     @owner_check
     async def set_config_role(self, ctx: CommandContext):
