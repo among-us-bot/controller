@@ -6,13 +6,13 @@ from cog_manager import CommandContext
 
 from os import environ as env
 
-owner_ids = [int(owner_id) for owner_id in env["OWNER_IDS"].split(" ")]
+owner_ids = env["OWNER_IDS"].split(" ")
 
 
 def owner_check(func):
     async def inner(_, ctx: CommandContext):
         if ctx.message.author["id"] in owner_ids:
-            await func(ctx)
+            await func(_, ctx)
         else:
             await ctx.send(f"<@{ctx.message.author['id']}>, you are boring me.")
 
@@ -29,7 +29,7 @@ class Admin(CogType):
 
         await ctx.send("Updated worker count!")
 
-    @CogType.command("admin create-guild (\\d)")
+    @CogType.command("admin create-guild (\\d+)")
     @owner_check
     async def create_guild(self, ctx: CommandContext):
         guild_id = str(ctx.args[0])
