@@ -33,10 +33,7 @@ class Admin(CogType):
     @owner_check
     async def set_config_role(self, ctx: CommandContext):
         config_role_id = ctx.args[0]
-        self.logger.debug(config_role_id)
-        self.logger.debug(type(config_role_id))
-        self.logger.debug(type(ctx.message.guild_id))
-
+        
         self.bot.update_config(ctx.message.guild_id, {"config-role": config_role_id})
         await ctx.send("Updated!")
 
