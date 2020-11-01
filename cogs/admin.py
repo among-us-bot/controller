@@ -36,6 +36,17 @@ class Admin(CogType):
         self.bot.last_scale_table.insert_one({"_id": guild_id, "scale": self.bot.workers.worker_counts[guild_id]})
         await ctx.send("Guild configs created!")
 
+    @CogType.command("admin set-config-role (\\d+)")
+    @owner_check
+    async def set_config_role(self, ctx: CommandContext):
+        config_role_id = ctx.args[0]
+        self.logger.debug(config_role_id)
+        self.logger.debug(type(config_role_id))
+        self.logger.debug(type(ctx.message.guild_id))
+
+        self.bot.update_config(ctx.message.guild_id, {"config-role": config_role_id})
+        await ctx.send("Updated!")
+
 
 def setup(bot: ExtendedClient):
     Admin(bot)
