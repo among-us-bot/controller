@@ -19,12 +19,6 @@ def staff_check(func):
 
 
 class Config(CogType):
-    @CogType.command("config set worker-count (\\d+)")
-    @staff_check
-    async def set_worker_count(self, ctx: CommandContext):
-        self.bot.update_config(ctx.message.guild_id, {"worker-count": int(ctx.args[0])})
-        await ctx.send("Updated")
-
     @CogType.command("config set matchmaking-category (\\d+)")
     @staff_check
     async def set_matchmaking_category(self, ctx: CommandContext):
