@@ -11,6 +11,7 @@ from speedcord.http import Route
 from logging import getLogger
 from aiohttp import ClientWebSocketResponse
 from ujson import dumps
+from os import environ as env
 
 
 class WorkerUtil:
@@ -21,7 +22,7 @@ class WorkerUtil:
         self.ws: ClientWebSocketResponse = None
 
     async def start(self):
-        pass
+        self.ws = await self.client.http.ws_connect(env["WORKER_MANAGER_HOST"])
 
     async def request(self, guild_id: str, route: Route, **kwargs):
         await self.send_ws("request", {
