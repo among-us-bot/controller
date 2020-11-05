@@ -95,7 +95,7 @@ class CustomShard(DefaultShard):
                     "status": "online",
                     "afk": False,
                     "activities": [{
-                        "name": "Among Us (Imposter)",  # Imposter is the controller, Crewmate 1, 2, 3... is workers
+                        "name": "Among Us",
                         "type": 5,
                         "created_at": 0
                     }]
