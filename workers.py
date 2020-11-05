@@ -22,7 +22,7 @@ class WorkerUtil:
         self.ws: ClientWebSocketResponse = None
 
     async def start(self):
-        self.ws = await self.client.http.ws_connect(env["WORKER_MANAGER_HOST"])
+        self.ws = await self.client.http.connect_ws(env["WORKER_MANAGER_HOST"])
 
     async def request(self, guild_id: str, route: Route, **kwargs):
         await self.send_ws("request", {
