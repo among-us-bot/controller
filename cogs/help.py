@@ -11,7 +11,10 @@ class Help(CogType):
         command_name = ctx.args[0]
         if command_name is None:
             prefix = await self.bot.get_prefix(ctx.message.guild_id)
-            header = f"**Use `{prefix}help command` to get info on a command**\n\n"
+            header = f"**Use `{prefix}help command-identifier` to get info on a command identifier**\n" \
+                     "Note: the command identifiers is *not* the command name, " \
+                     "get the command name/syntax by using the command above" \
+                     "Command identifiers:\n"
             command_names = [command_details["name"] for command_details in self.bot.cog_manager.commands]
             await ctx.send(header + "\n".join(command_names))
 
