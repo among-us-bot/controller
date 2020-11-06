@@ -6,7 +6,7 @@ from cog_manager import CommandContext
 
 
 class Help(CogType):
-    @CogType.command("help ( ?\\w)*")
+    @CogType.command("help( ?\\w)*")
     async def help(self, ctx: CommandContext):
         command_name = ctx.args[0]
         if command_name is None:
