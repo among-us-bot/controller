@@ -10,9 +10,9 @@ class Help(CogType):
     async def help(self, ctx: CommandContext):
         command_name = ctx.args[0]
         if command_name is None:
-            prefix = self.bot.get_prefix(ctx.message.guild_id)
-            header = f"__Use {prefix}help *command* to get info on a command__\n"
-            command_names = [command_details["name"] for command_details in self.bot.cog_manager.commands]
+            prefix = await self.bot.get_prefix(ctx.message.guild_id)
+            header = f"**Use `{prefix}help command` to get info on a command**\n\n"
+            command_names = [command_details["usage"] for command_details in self.bot.cog_manager.commands]
             await ctx.send(header + "\n".join(command_names))
 
 
