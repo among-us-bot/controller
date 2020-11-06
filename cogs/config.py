@@ -5,6 +5,7 @@ from custom_types import CogType, ExtendedClient
 from cog_manager import CommandContext
 
 from speedcord.http import Route
+from ujson import dumps
 
 
 def staff_check(func):
@@ -60,6 +61,12 @@ class Config(CogType):
     async def set_waiting_vc(self, ctx: CommandContext):
         self.bot.update_config(ctx.message.guild_id, {"matchmaking-waiting-vc": ctx.args[0]})
         await ctx.send("Waiting VC updated!")
+
+    @CogType.command("config display")
+    @staff_check
+    async def get_config(self, ctx: CommandContext):
+        config = self.bot.get_config(ctx.message.guild_id)
+        await ctx.send(f"```json\n{dumps(config, indent=4)}\n```")
 
 
 def setup(bot: ExtendedClient):
