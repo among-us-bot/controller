@@ -45,7 +45,7 @@ class CogManager:
     def register_command(self, function, syntax, *,  usage=None, description=None, name=None):
         command_details = {
             "func": function,
-            "syntax": syntax,
+            "syntax": compile(syntax),
             "usage": usage,
             "description": description,
             "name": name or function.__name__
