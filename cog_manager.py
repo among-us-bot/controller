@@ -42,9 +42,16 @@ class CogManager:
         getattr(module, "setup")(self.client)
         self.logger.debug(f"Added cog '{cog_name}'")
 
-    def register_command(self, command, command_syntax):
-        self.commands.append((compile(command_syntax), command))
-        self.logger.debug(f"Registered command {command.__name__}")
+    def register_command(self, function, syntax, *,  usage=None, description=None, name=None):
+        command_details = {
+            "func": function,
+            "syntax": syntax,
+            "usage": usage,
+            "description": description,
+            "name": name or function.__name__
+        }
+        self.commands.append(command_details)
+        self.logger.debug(f"Registered command {command_details['name']}")
 
     async def process_message(self, message: dict, shard):
         if message["author"].get("bot", False):
@@ -56,12 +63,12 @@ class CogManager:
 
         command_syntax: Pattern
         self.logger.debug(content_without_prefix)
-        for command_syntax, command in self.commands:
-            match = command_syntax.fullmatch(content_without_prefix)
+        for command_details in self.commands:
+            match = command_details["syntax"].fullmatch(content_without_prefix)
             if match is None:
                 continue
             context = CommandContext(message, self.client, match.groups())
-            await command(context)
+            await command_details["func"](context)
             self.logger.debug("Processing command")
             return
         self.logger.debug("Unknown command!")
