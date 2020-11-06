@@ -10,8 +10,8 @@ from os import environ as env
 class About(CogType):
     @CogType.command("about")
     async def about(self, ctx: CommandContext):
-        r = await ctx.send("AQue is a bot to manage your among us matchmaking servers easily!\n"
-                           f"Join {env['DISCORD']} if you want it for yourself!")
+        await ctx.send("AQue is a bot to manage your among us matchmaking servers easily!\n"
+                       f"Join {env['DISCORD']} if you want it for yourself!")
 
 
 def setup(bot: ExtendedClient):
