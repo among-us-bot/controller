@@ -23,7 +23,7 @@ class Config(CogType):
     @CogType.command("config set matchmaking-category (\\d+)")
     @staff_check
     async def set_matchmaking_category(self, ctx: CommandContext):
-        self.bot.update_config(ctx.message.guild_id, {"matchmaking-category": int(ctx.args[0])})
+        self.bot.update_config(ctx.message.guild_id, {"matchmaking-category": ctx.args[0]})
         await ctx.send("Matchmaking category set!")
 
     @CogType.command("config create matchmaking-type ([A-z,-]+) (\\d+)")
