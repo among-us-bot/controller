@@ -5,7 +5,7 @@ from custom_types import CogType, ExtendedClient
 from cog_manager import CommandContext
 
 from speedcord.http import Route
-from ujson import dumps
+from yaml import dump
 
 
 def staff_check(func):
@@ -66,7 +66,7 @@ class Config(CogType):
     @staff_check
     async def get_config(self, ctx: CommandContext):
         config = self.bot.get_config(ctx.message.guild_id)
-        await ctx.send(f"```json\n{dumps(config, indent=4)}\n```")
+        await ctx.send(f"```json\n{dump(config)}\n```")
 
 
 def setup(bot: ExtendedClient):
