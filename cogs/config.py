@@ -6,9 +6,11 @@ from cog_manager import CommandContext
 
 from speedcord.http import Route
 from yaml import dump
+from functools import wraps
 
 
 def staff_check(func):
+    @wraps(func)
     async def inner(_, ctx: CommandContext):
         guild_config = ctx.client.get_config(ctx.message.guild_id)
         if str(guild_config.get("config-role")) in ctx.message.member["roles"]:
