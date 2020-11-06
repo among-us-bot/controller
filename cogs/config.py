@@ -39,7 +39,7 @@ class Config(CogType):
         if matchmaking_type in [match_type["name"] for match_type in matchmaking_types.values()]:
             return await ctx.send("This matchmaking type already exists!")
         route = Route("POST", "/guilds/{guild_id}/channels", guild_id=ctx.message.guild_id)
-        response = await ctx.request(route, json={
+        response = await self.bot.http.request(route, json={
             "name": matchmaking_type,
             "parent_id": config["matchmaking-category"],
             "type": 2
