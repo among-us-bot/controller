@@ -19,16 +19,11 @@ class Queue(CogType):
         guild_id = data["guild_id"]
         config = self.bot.get_config(guild_id)
 
-        # Auto-banning players
+        # Yeeting banned players
         if user_id in self.banned_players:
             args, kwargs = self.bot.payloads.move_member(guild_id, user_id, None)
             await self.bot.workers.request(guild_id, *args, **kwargs)
             return
-        if user_id in self.players_in_a_match:
-            self.banned_players.append(user_id)
-            self.loop.call_later(config.get("autoban-time", 60), lambda: self.banned_players.remove(user_id))
-            return
-        self.players_in_a_match.append(user_id)
         # Moving to the temp vc
         if channel_id not in config.get("matchmaking-types", {}).keys():
             return
