@@ -7,29 +7,37 @@ from asyncio import Lock
 from speedcord.http import Route
 
 
+class DefaultDict(dict):
+    def __init__(self, default, *args, **kwargs):
+        self.default_value = default
+        super().__init__(*args, **kwargs)
+
+    def __getitem__(self, item):
+        value = self.get(item, None)
+        if value is not None:
+            return value
+        value = self.default_value()
+        self[item] = value
+        return value
+
+
 class Queue(CogType):
     def __init__(self, bot):
         super().__init__(bot)
         self.loop = self.bot.loop
-        self.waiting_in_queue = {}
+        self.waiting_in_queue = DefaultDict(lambda: [])
         self.players_in_queue = []
         self.banned_players = []
-        self.categories = {}
-        self.category_locks = {}
-        self.move_to_games_locks = {}
+        self.categories = DefaultDict(lambda: {})
+        self.category_locks = DefaultDict(lambda: Lock())
+        self.move_to_games_locks = DefaultDict(lambda: Lock())
         self.max_category_uses = 50
 
     async def get_category(self, guild_id: str):
-        lock = self.category_locks.get(guild_id, None)
-        if lock is None:
-            lock = Lock()
-            self.category_locks[guild_id] = lock
+        lock = self.category_locks[guild_id]
         async with lock:
-            guild_categories = self.categories.get(guild_id, None)
-            if guild_categories is None:
-                guild_categories = {}
-                self.categories[guild_id] = guild_categories
-            for category_id, category_uses in self.categories.get(guild_id, None).items():
+            guild_categories = self.categories[guild_id]
+            for category_id, category_uses in guild_categories.items():
                 if category_uses >= self.max_category_uses:
                     continue
                 category_uses += 1
@@ -65,16 +73,12 @@ class Queue(CogType):
         waiting_vc = config.get("matchmaking-waiting-vc", None)
         if waiting_vc is None:
             return
-        currently_waiting_in_queue = self.waiting_in_queue.get(guild_id, None)
-        if currently_waiting_in_queue is None:
-            currently_waiting_in_queue = []
-        currently_waiting_in_queue.append({
+        self.waiting_in_queue[guild_id].append({
             "id": user_id,
             "match-type": config["matchmaking-types"][channel_id]["name"],
             "matchmaking-channel-id": channel_id,
             "premium": False
         })
-        self.waiting_in_queue[guild_id] = currently_waiting_in_queue
         args, kwargs = self.bot.payloads.move_member(guild_id, user_id, waiting_vc)
         await self.bot.workers.request(guild_id, *args, **kwargs)
 
@@ -84,21 +88,16 @@ class Queue(CogType):
         user_id = data["member"]["user"]["id"]
         guild_id = data["guild_id"]
         config = self.bot.get_config(guild_id)
-        lock = self.move_to_games_locks.get(guild_id, None)
 
         if channel_id != config.get("matchmaking-waiting-vc", None):
             return
 
-        if lock is None:
-            lock = Lock()
-            self.move_to_games_locks[guild_id] = lock
-        async with lock:
+        async with self.move_to_games_locks[guild_id]:
             if user_id in self.players_in_queue:
                 return
             self.players_in_queue.append(user_id)
             game_counts = {}
             game_players = {}
-            gamemode_players = {}
             current_players = self.waiting_in_queue[guild_id].copy()
             for player in current_players:
                 match_type = player["match-type"]
@@ -128,6 +127,10 @@ class Queue(CogType):
                         args, kwargs = self.bot.payloads.move_member(guild_id, to_be_moved_id, game_vc)
                         await self.bot.workers.request(guild_id, *args, **kwargs)
                     return
+
+    @CogType.event("VOICE_STATE_UPDATE")
+    async def remove_on_disconnect(self, data, shard):
+        pass
 
 
 def setup(bot: ExtendedClient):
