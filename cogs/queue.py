@@ -3,8 +3,9 @@ Created by Epic at 11/1/20
 """
 from custom_types import CogType, ExtendedClient
 
-from asyncio import Lock
+from asyncio import Lock, sleep
 from speedcord.http import Route
+from cog_manager import CommandContext
 
 
 class DefaultDict(dict):
@@ -52,6 +53,10 @@ class Queue(CogType):
             self.categories[guild_id][response_data["id"]] = 1
             self.logger.debug(f"Created new category in guild {guild_id}")
             return response_data["id"]
+
+    #@CogType.command("debug (\\w*)")
+    async def debug(self, ctx: CommandContext):
+        await ctx.send(str(getattr(self, ctx.args[0], "Not found")))
 
     @CogType.event("VOICE_STATE_UPDATE")
     async def move_to_temp_queue(self, data, shard):
@@ -129,8 +134,22 @@ class Queue(CogType):
                     return
 
     @CogType.event("VOICE_STATE_UPDATE")
-    async def remove_on_disconnect(self, data, shard):
-        pass
+    async def remove_on_disconnect_in_queue(self, data, shard):
+        channel_id = data["channel_id"]
+        user_id = data["member"]["user"]["id"]
+        guild_id = data["guild_id"]
+        config = self.bot.get_config(guild_id)
+
+        waiting_vc = config.get("matchmaking-waiting-vc", None)
+        if waiting_vc != channel_id:
+            return
+
+        async with self.move_to_games_locks[guild_id]:
+            waiting_in_queue = self.waiting_in_queue[guild_id].copy()
+            for member in waiting_in_queue:
+                if member["id"] == user_id:
+                    self.waiting_in_queue[guild_id].remove(member)
+                    break
 
 
 def setup(bot: ExtendedClient):
