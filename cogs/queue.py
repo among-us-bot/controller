@@ -140,8 +140,7 @@ class Queue(CogType):
         guild_id = data["guild_id"]
         config = self.bot.get_config(guild_id)
 
-        waiting_vc = config.get("matchmaking-waiting-vc", None)
-        if waiting_vc != channel_id:
+        if channel_id is not None:
             return
 
         async with self.move_to_games_locks[guild_id]:
