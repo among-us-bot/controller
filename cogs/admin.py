@@ -22,15 +22,6 @@ def owner_check(func):
 
 
 class Admin(CogType):
-    @CogType.command("admin force-workers (\\d+) (\\d+)", usage="admin force-workers <guild_id> <worker_count>")
-    @owner_check
-    async def force_workers(self, ctx: CommandContext):
-        guild_id = str(ctx.args[0])
-        worker_count = int(ctx.args[1])
-        self.bot.workers.worker_counts[guild_id] = worker_count
-
-        await ctx.send("Updated worker count!")
-
     @CogType.command("admin set-config-role (\\d+)", usage="admin set-config-role <role-id>",
                      description="Set the permission role for a guild")
     @owner_check
