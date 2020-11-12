@@ -22,13 +22,17 @@ def staff_check(func):
 
 
 class Config(CogType):
-    @CogType.command("config set matchmaking-category (\\d+)")
+    @CogType.command("config set matchmaking-category (\\d+)",
+                     usage="config set matchmaking-category <matchmaking-category-id>",
+                     description="Sets the category for matchmaking types")
     @staff_check
     async def set_matchmaking_category(self, ctx: CommandContext):
         self.bot.update_config(ctx.message.guild_id, {"matchmaking-category": ctx.args[0]})
         await ctx.send("Matchmaking category set!")
 
-    @CogType.command("config create matchmaking-type ([A-z,-]+) (\\d+)")
+    @CogType.command("config create matchmaking-type ([A-z,-]+) (\\d+)",
+                     usage="config create matchmaking-type <name> <required-players>",
+                     description="Creates a different matchmaking type for the matchmaker")
     @staff_check
     async def create_matchmaking_type(self, ctx: CommandContext):
         matchmaking_type = ctx.args[0]
@@ -58,13 +62,14 @@ class Config(CogType):
         self.bot.update_config(ctx.message.guild_id, {"matchmaking-types": matchmaking_types})
         await ctx.send("Created a matchmaking category!")
 
-    @CogType.command("config set waiting-vc (\\d+)")
+    @CogType.command("config set waiting-vc (\\d+)", usage="config set waiting-vc <vc-id>",
+                     description="Sets the channel being used for people waiting for a match")
     @staff_check
     async def set_waiting_vc(self, ctx: CommandContext):
         self.bot.update_config(ctx.message.guild_id, {"matchmaking-waiting-vc": ctx.args[0]})
         await ctx.send("Waiting VC updated!")
 
-    @CogType.command("config display")
+    @CogType.command("config display", usage="config display", description="Shows the config in YAML format")
     @staff_check
     async def get_config(self, ctx: CommandContext):
         config = self.bot.get_config(ctx.message.guild_id)

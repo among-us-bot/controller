@@ -112,19 +112,20 @@ class CogType:
             func = getattr(self, attr_name)
             command_syntax = getattr(func, "__command_syntax__", None)
             if command_syntax is not None:
-                self.bot.cog_manager.register_command(func, command_syntax)
+                self.bot.cog_manager.register_command(func, command_syntax, **getattr(func, "__command_attrs__", {}))
 
             event_name = getattr(func, "__event_name__", None)
             if event_name is not None:
                 self.bot.event_dispatcher.register(event_name, func)
 
     @staticmethod
-    def command(command_syntax=None):
+    def command(command_syntax=None, **kwargs):
         def inner(func):
             nonlocal command_syntax
             if command_syntax is None:
                 command_syntax = func.__name__
             func.__command_syntax__ = command_syntax
+            func.__command_attrs__ = kwargs
             return func
 
         return inner

@@ -22,7 +22,7 @@ def owner_check(func):
 
 
 class Admin(CogType):
-    @CogType.command("admin force-workers (\\d+) (\\d+)")
+    @CogType.command("admin force-workers (\\d+) (\\d+)", usage="admin force-workers <guild_id> <worker_count>")
     @owner_check
     async def force_workers(self, ctx: CommandContext):
         guild_id = str(ctx.args[0])
@@ -31,11 +31,12 @@ class Admin(CogType):
 
         await ctx.send("Updated worker count!")
 
-    @CogType.command("admin set-config-role (\\d+)")
+    @CogType.command("admin set-config-role (\\d+)", usage="admin set-config-role <role-id>",
+                     description="Set the permission role for a guild")
     @owner_check
     async def set_config_role(self, ctx: CommandContext):
         config_role_id = ctx.args[0]
-        
+
         self.bot.update_config(ctx.message.guild_id, {"config-role": config_role_id})
         await ctx.send("Updated!")
 
