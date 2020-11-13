@@ -20,7 +20,7 @@ def create_check(check_func, name):
     return inner
 
 
-owner_check = create_check(lambda ctx: ctx.message.author["id"] in owner_ids, "owner_check")
+developer_check = create_check(lambda ctx: ctx.message.author["id"] in owner_ids, "developer_check")
 staff_check = create_check(
     lambda ctx: ctx.client.get_config(ctx.message.guild_id).get("config-role") in ctx.message.member["roles"],
     "staff_check")
