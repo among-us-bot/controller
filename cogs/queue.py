@@ -33,6 +33,8 @@ class Queue(CogType):
         self.category_locks = DefaultDict(lambda: Lock())
         self.move_to_games_locks = DefaultDict(lambda: Lock())
         self.max_category_uses = 50
+        self.active_games = {}
+        self.in_game = {}
 
     async def get_category(self, guild_id: str):
         lock = self.category_locks[guild_id]
@@ -126,11 +128,13 @@ class Queue(CogType):
                     })
                     response_data = await response.json()
                     game_vc = response_data["id"]
+                    self.active_games[game_vc] = 0
                     for to_be_moved in game_players[match_type]:
                         to_be_moved_id = to_be_moved["id"]
                         self.waiting_in_queue[guild_id].remove(to_be_moved)
                         args, kwargs = self.bot.payloads.move_member(guild_id, to_be_moved_id, game_vc)
                         await self.bot.workers.request(guild_id, *args, **kwargs)
+                        self.players_in_queue.remove(user_id)
                     return
 
     @CogType.event("VOICE_STATE_UPDATE")
@@ -138,7 +142,6 @@ class Queue(CogType):
         channel_id = data["channel_id"]
         user_id = data["member"]["user"]["id"]
         guild_id = data["guild_id"]
-        config = self.bot.get_config(guild_id)
 
         if channel_id is not None:
             return
@@ -149,6 +152,33 @@ class Queue(CogType):
                 if member["id"] == user_id:
                     self.waiting_in_queue[guild_id].remove(member)
                     break
+
+    @CogType.event("VOICE_STATE_UPDATE")
+    async def purge_old_games(self, data, shard):
+        channel_id = data["channel_id"]
+        user_id = data["member"]["user"]["id"]
+        guild_id = data["guild_id"]
+
+        if channel_id in self.active_games.keys() and user_id not in self.in_game:
+            # User joins a game
+            self.in_game[user_id] = channel_id
+            return
+        if user_id in self.in_game.keys() and channel_id is None:
+            # User left a game
+            channel_id = self.in_game[user_id]
+            del self.in_game[user_id]
+            self.active_games[channel_id] -= 1
+            if self.active_games[channel_id] < 0:  # In case there is a collision
+                del self.active_games[channel_id]
+                r = Route("DELETE", "/channels/{channel}", channel=channel_id, guild_id=guild_id)
+                await self.bot.http.request(r)
+
+
+
+
+
+
+
 
 
 def setup(bot: ExtendedClient):
