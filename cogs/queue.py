@@ -56,10 +56,6 @@ class Queue(CogType):
             self.logger.debug(f"Created new category in guild {guild_id}")
             return response_data["id"]
 
-    #@CogType.command("debug (\\w*)")
-    async def debug(self, ctx: CommandContext):
-        await ctx.send(str(getattr(self, ctx.args[0], "Not found")))
-
     @CogType.event("VOICE_STATE_UPDATE")
     async def move_to_temp_queue(self, data, shard):
         channel_id = data["channel_id"]
