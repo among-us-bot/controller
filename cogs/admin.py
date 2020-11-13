@@ -3,22 +3,7 @@ Created by Epic at 10/30/20
 """
 from custom_types import CogType, ExtendedClient
 from cog_manager import CommandContext
-
-from os import environ as env
-from functools import wraps
-
-owner_ids = env["OWNER_IDS"].split(" ")
-
-
-def owner_check(func):
-    @wraps(func)
-    async def inner(_, ctx: CommandContext):
-        if ctx.message.author["id"] in owner_ids:
-            await func(_, ctx)
-        else:
-            await ctx.send(f"<@{ctx.message.author['id']}>, you are boring me.")
-
-    return inner
+from checks import owner_check
 
 
 class Admin(CogType):

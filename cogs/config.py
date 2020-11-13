@@ -3,22 +3,10 @@ Created by Epic at 10/31/20
 """
 from custom_types import CogType, ExtendedClient
 from cog_manager import CommandContext
+from checks import staff_check
 
 from speedcord.http import Route
 from yaml import dump
-from functools import wraps
-
-
-def staff_check(func):
-    @wraps(func)
-    async def inner(_, ctx: CommandContext):
-        guild_config = ctx.client.get_config(ctx.message.guild_id)
-        if str(guild_config.get("config-role")) in ctx.message.member["roles"]:
-            await func(_, ctx)
-        else:
-            await ctx.send(f"<@{ctx.message.author['id']}>, only staff has access to this.")
-
-    return inner
 
 
 class Config(CogType):
