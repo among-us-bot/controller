@@ -1,7 +1,10 @@
 """
 Created by Epic at 10/22/20
 """
+from checks import CheckError
+
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from .custom_types import ExtendedClient as Client
 else:
@@ -42,13 +45,16 @@ class CogManager:
         getattr(module, "setup")(self.client)
         self.logger.debug(f"Added cog '{cog_name}'")
 
-    def register_command(self, function, syntax, *,  usage=None, description=None, name=None):
+    def register_command(self, function, syntax, *, usage=None, description=None, name=None, checks=None):
+        if checks is None:
+            checks = []
         command_details = {
             "func": function,
             "syntax": compile(syntax),
             "usage": usage,
             "description": description,
-            "name": name or function.__name__
+            "name": name or function.__name__,
+            "checks": checks
         }
         self.commands.append(command_details)
         self.logger.debug(f"Registered command {command_details['name']}")
@@ -68,6 +74,15 @@ class CogManager:
             if match is None:
                 continue
             context = CommandContext(message, self.client, match.groups())
+
+            # Verify checks
+            for check, check_name in command_details["checks"]:
+                check_result = check(context)
+                if not check_result:
+                    await context.send(f"<@{context.message.author['id']}>, you can't run this command! "
+                                       f"Check failed: `{check_name.upper()}`.")
+                    return
+
             await command_details["func"](context)
             self.logger.debug("Processing command")
             return

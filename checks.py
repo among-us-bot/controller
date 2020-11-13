@@ -1,31 +1,27 @@
 """
 Created by Epic at 11/13/20
 """
-from functools import wraps
-from cog_manager import CommandContext
 from os import environ as env
 
 owner_ids = env["OWNER_IDS"].split(" ")
 
 
-def owner_check(func):
-    @wraps(func)
-    async def inner(_, ctx: CommandContext):
-        if ctx.message.author["id"] in owner_ids:
-            await func(_, ctx)
-        else:
-            await ctx.send(f"<@{ctx.message.author['id']}>, you are boring me.")
+class CheckError(Exception):
+    pass
+
+
+def create_check(check_func, name):
+    def inner(func):
+        current_checks = getattr(func, "__command_checks__", [])
+        current_checks.append((check_func, name))
+        func.__command_checks__ = current_checks
+        return func
 
     return inner
 
 
-def staff_check(func):
-    @wraps(func)
-    async def inner(_, ctx: CommandContext):
-        guild_config = ctx.client.get_config(ctx.message.guild_id)
-        if str(guild_config.get("config-role")) in ctx.message.member["roles"]:
-            await func(_, ctx)
-        else:
-            await ctx.send(f"<@{ctx.message.author['id']}>, only staff has access to this.")
-
-    return inner
+test_check = create_check(lambda ctx: False, "test_check")
+owner_check = create_check(lambda ctx: ctx.message.author["id"] in owner_ids, "owner_check")
+staff_check = create_check(
+    lambda ctx: ctx.client.get_config(ctx.message.guild_id).get("config-role") in ctx.message.member["roles"],
+    "staff_check")

@@ -3,7 +3,7 @@ Created by Epic at 10/30/20
 """
 from custom_types import CogType, ExtendedClient
 from cog_manager import CommandContext
-from checks import owner_check
+from checks import owner_check, test_check
 
 
 class Admin(CogType):
@@ -18,6 +18,7 @@ class Admin(CogType):
 
     @CogType.command("admin debug (\\w*)", usage="admin debug <attribute.subattr>")
     @owner_check
+    @test_check
     async def debug(self, ctx: CommandContext):
         current_attr = self.bot
         try:
