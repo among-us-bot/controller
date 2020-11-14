@@ -26,6 +26,9 @@ class Config(CogType):
         matchmaking_type = ctx.args[0]
         required_users = int(ctx.args[1])
 
+        if required_users <= 1:
+            return await ctx.send("You need at least 2 players in a lobby.")
+
         config = self.bot.get_config(ctx.message.guild_id)
 
         matchmaking_types = config.get("matchmaking-types", {})
