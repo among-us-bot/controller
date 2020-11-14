@@ -54,6 +54,25 @@ class Config(CogType):
         self.bot.update_config(ctx.message.guild_id, {"matchmaking-types": matchmaking_types})
         await ctx.send("Created a matchmaking category!")
 
+    @CogType.command(
+        command_syntax="config delete matchmaking-type ([A-z,-]+)",
+        usage="config delete matchmaking-type <name>",
+        description="Deletes a matchmaking portal",
+        name="delete-matchmaking-type"
+    )
+    @staff_check
+    async def delete_matchmaking_type(self, ctx: CommandContext):
+        matchmaking_type = ctx.args[0]
+        config = self.bot.get_config(ctx.message.guild_id)
+
+        matchmaking_types = config.get("matchmaking-types", {})
+        if matchmaking_type not in [match_type["name"] for match_type in matchmaking_types.values()]:
+            return await ctx.send("This matchmaking type doesn't exist!")
+        del matchmaking_types[matchmaking_type]
+        config["matchmaking-types"] = matchmaking_types
+        self.bot.update_config(ctx.message.guild_id, config)
+        await ctx.send("Done! Delete the channel to finish.")
+
     @CogType.command("config set waiting-vc (\\d+)", usage="config set waiting-vc <vc-id>",
                      description="Sets the channel being used for people waiting for a match")
     @staff_check
