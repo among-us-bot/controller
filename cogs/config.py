@@ -37,14 +37,15 @@ class Config(CogType):
         response = await self.bot.http.request(route, json={
             "name": matchmaking_type,
             "parent_id": config["matchmaking-category"],
-            "type": 2
+            "type": 2,
+            "user_limit": required_users
         })
         data = await response.json()
         channel_id = data["id"]
         matchmaking_data = {
             "channel_id": channel_id,
             "name": matchmaking_type,
-            "required_users": required_users
+            "required_users": required_users,
         }
         matchmaking_types[channel_id] = matchmaking_data
         self.bot.update_config(ctx.message.guild_id, {"matchmaking-types": matchmaking_types})
