@@ -29,4 +29,4 @@ class Admin(CogType):
 
 
 def setup(bot: ExtendedClient):
-    Admin(bot)
+    return Admin(bot)

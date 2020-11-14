@@ -15,4 +15,4 @@ class About(CogType):
 
 
 def setup(bot: ExtendedClient):
-    About(bot)
+    return About(bot)

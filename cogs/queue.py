@@ -170,12 +170,5 @@ class Queue(CogType):
                 await self.bot.http.request(r)
 
 
-
-
-
-
-
-
-
 def setup(bot: ExtendedClient):
-    Queue(bot)
+    return Queue(bot)

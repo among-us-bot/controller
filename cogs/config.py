@@ -101,4 +101,4 @@ class Config(CogType):
 
 
 def setup(bot: ExtendedClient):
-    Config(bot)
+    return Config(bot)

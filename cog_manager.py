@@ -38,11 +38,13 @@ class CogManager:
         self.client = client
         self.logger = getLogger("controller.manager.cog_manager")
         self.commands = []
+        self.cogs = {}
         self.client.event_dispatcher.register("MESSAGE_CREATE", self.process_message)
 
     def register_cog(self, cog_name):
         module = import_module("." + cog_name, "cogs")
-        getattr(module, "setup")(self.client)
+        cog = getattr(module, "setup")(self.client)
+        self.cogs[cog_name] = cog
         self.logger.debug(f"Added cog '{cog_name}'")
 
     def register_command(self, function, syntax, *, usage=None, description=None, name=None, checks=None):

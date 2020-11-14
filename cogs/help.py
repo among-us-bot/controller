@@ -52,4 +52,4 @@ class Help(CogType):
 
 
 def setup(bot: ExtendedClient):
-    Help(bot)
+    return Help(bot)
