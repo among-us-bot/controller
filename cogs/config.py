@@ -10,17 +10,22 @@ from yaml import dump
 
 
 class Config(CogType):
-    @CogType.command("config set matchmaking-category (\\d+)",
-                     usage="config set matchmaking-category <matchmaking-category-id>",
-                     description="Sets the category for matchmaking types")
+    @CogType.command(
+        command_syntax="config set matchmaking-category (\\d+)",
+        name="set-matchmaking-category",
+        usage="config set matchmaking-category <matchmaking-category-id>",
+        description="Sets the category for matchmaking types")
     @staff_check
     async def set_matchmaking_category(self, ctx: CommandContext):
         self.bot.update_config(ctx.message.guild_id, {"matchmaking-category": ctx.args[0]})
         await ctx.send("Matchmaking category set!")
 
-    @CogType.command("config create matchmaking-type ([A-z,-]+) (\\d+)",
-                     usage="config create matchmaking-type <name> <required-players>",
-                     description="Creates a different matchmaking type for the matchmaker")
+    @CogType.command(
+        command_syntax="config create matchmaking-type ([A-z,-]+) (\\d+)",
+        name="create-matchmaking-type",
+        usage="config create matchmaking-type <name> <required-players>",
+        description="Creates a different matchmaking type for the matchmaker"
+    )
     @staff_check
     async def create_matchmaking_type(self, ctx: CommandContext):
         matchmaking_type = ctx.args[0]
@@ -56,9 +61,9 @@ class Config(CogType):
 
     @CogType.command(
         command_syntax="config delete matchmaking-type ([A-z,-]+)",
+        name="delete-matchmaking-type",
         usage="config delete matchmaking-type <name>",
         description="Deletes a matchmaking portal",
-        name="delete-matchmaking-type"
     )
     @staff_check
     async def delete_matchmaking_type(self, ctx: CommandContext):
@@ -73,14 +78,22 @@ class Config(CogType):
         self.bot.update_config(ctx.message.guild_id, config)
         await ctx.send("Done! Delete the channel to finish.")
 
-    @CogType.command("config set waiting-vc (\\d+)", usage="config set waiting-vc <vc-id>",
-                     description="Sets the channel being used for people waiting for a match")
+    @CogType.command(
+        command_syntax="config set waiting-vc (\\d+)",
+        name="set-waiting-vc",
+        usage="config set waiting-vc <vc-id>",
+        description="Sets the channel being used for people waiting for a match"
+    )
     @staff_check
     async def set_waiting_vc(self, ctx: CommandContext):
         self.bot.update_config(ctx.message.guild_id, {"matchmaking-waiting-vc": ctx.args[0]})
         await ctx.send("Waiting VC updated!")
 
-    @CogType.command("config display", usage="config display", description="Shows the config in YAML format")
+    @CogType.command(
+        command_syntax="config display",
+        usage="config display",
+        description="Shows the config in YAML format"
+    )
     @staff_check
     async def get_config(self, ctx: CommandContext):
         config = self.bot.get_config(ctx.message.guild_id)
