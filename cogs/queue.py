@@ -167,7 +167,10 @@ class Queue(CogType):
             if self.active_games[channel_id] < 0:  # In case there is a collision
                 del self.active_games[channel_id]
                 r = Route("DELETE", "/channels/{channel}", channel=channel_id, guild_id=guild_id)
-                await self.bot.http.request(r)
+                resp = await self.bot.http.request(r)
+                resp_data = await resp.json()
+                parent_id = resp_data["parent_id"]
+                self.categories[guild_id][parent_id] -= 1
 
 
 def setup(bot: ExtendedClient):
