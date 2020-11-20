@@ -1,4 +1,4 @@
-speedcord==0.2.92
+speedcord==0.2.101
 aiohttp~=3.6.2
 ujson~=3.0.0
 pymongo~=3.10.1
