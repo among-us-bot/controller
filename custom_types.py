@@ -25,6 +25,7 @@ class ExtendedClient(Client):
         self.mongo_client = MongoClient(env["DATABASE_HOST"])
         self.database = self.mongo_client[env["DATABASE_DB"]]
         self.config_table = self.database["guild_config"]
+        self.whitelisted_table = self.database["whitelisted"]
 
     async def get_prefix(self, guild_id: str):
         config = self.get_config(guild_id)
