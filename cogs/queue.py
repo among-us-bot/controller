@@ -3,7 +3,7 @@ Created by Epic at 11/1/20
 """
 from custom_types import CogType, ExtendedClient
 
-from asyncio import Lock
+from asyncio import Lock, sleep
 from speedcord.http import Route
 
 
@@ -67,6 +67,7 @@ class Queue(CogType):
         user_id = data["member"]["user"]["id"]
         guild_id = data["guild_id"]
         config = self.bot.get_config(guild_id)
+        await sleep(.05)  # Fixes a bug where not waiting causes the client to spam-move
 
         # Moving to the temp vc
         if channel_id not in config.get("matchmaking-types", {}).keys():
@@ -163,6 +164,7 @@ class Queue(CogType):
         if channel_id in self.active_games.keys() and user_id not in self.in_game:
             # User joins a game
             self.in_game[user_id] = channel_id
+            self.active_games[channel_id] += 1
             return
         if user_id in self.in_game.keys() and channel_id is None:
             # User left a game
