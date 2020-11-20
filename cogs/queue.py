@@ -48,7 +48,13 @@ class Queue(CogType):
             route = Route("POST", "/guilds/{guild_id}/channels", guild_id=guild_id)
             response = await self.bot.http.request(route, json={
                 "name": "aque-lobby",
-                "type": 4
+                "type": 4,
+                "permission_overwrites": [{
+                    "id": guild_id,  # Default role is always the guild id
+                    "type": 0,  # Role
+                    "deny": "1024",  # Deny seeing VCs
+                    "allow": "0"
+                }]
             })
             response_data = await response.json()
             self.categories[guild_id][response_data["id"]] = 1
