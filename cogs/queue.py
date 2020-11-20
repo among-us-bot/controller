@@ -3,9 +3,8 @@ Created by Epic at 11/1/20
 """
 from custom_types import CogType, ExtendedClient
 
-from asyncio import Lock, sleep
+from asyncio import Lock
 from speedcord.http import Route
-from cog_manager import CommandContext
 
 
 class DefaultDict(dict):
