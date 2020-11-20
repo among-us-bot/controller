@@ -19,7 +19,7 @@ class Recovery(CogType):
         for channel in data["channels"]:
             if channel["type"] == 4:  # Categories
                 if channel["name"] == "aque-lobby":
-                    categories.append(data["id"])
+                    categories.append(channel["id"])
             elif channel["type"] == 2:
                 if "parent_id" not in channel.keys():
                     return
@@ -37,6 +37,7 @@ class Recovery(CogType):
         cog = self.bot.cog_manager.cogs["queue"]
         for category_id, lobby_count in category_counts.items():
             cog.categories[data["id"]][category_id] = lobby_count
+        self.logger.debug(cog.categories)
         self.logger.debug(f"Recovered guild {data['name']} with {len(category_counts.keys())} categories")
 
 
