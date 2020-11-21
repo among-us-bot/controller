@@ -102,6 +102,17 @@ class Config(CogType):
         config = self.bot.get_config(ctx.message.guild_id)
         await ctx.send(f"```yaml\n{dump(config)}\n```")
 
+    @CogType.command(
+        command_syntax="config set prefix (.*)",
+        name="set-prefix",
+        usage="config set prefix <prefix>",
+        description="Set the bot prefix"
+    )
+    @staff_check
+    async def set_prefix(self, ctx: CommandContext):
+        await self.bot.update_config(ctx.message.guild_id, {"prefix": ctx.args[0]})
+        await ctx.send("Updated!")
+
 
 def setup(bot: ExtendedClient):
     return Config(bot)
