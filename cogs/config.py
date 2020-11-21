@@ -113,6 +113,19 @@ class Config(CogType):
         self.bot.update_config(ctx.message.guild_id, {"prefix": ctx.args[0]})
         await ctx.send("Updated!")
 
+    @CogType.command(
+        command_syntax="config toggle unknown-command",
+        name="toggle-unknown-command",
+        usage="config toggle unknown-command",
+        description="Toggles unknown command messages"
+    )
+    @staff_check
+    async def toggle_unknown_command_messages(self, ctx: CommandContext):
+        already_enabled = self.bot.get_config(ctx.message.guild_id).get("unknown-command-messages", True)
+        enabled = not already_enabled
+        self.bot.update_config(ctx.message.guild_id, {"unknown-command-messages": enabled})
+        await ctx.send(f"Unknown command messages {('disabled', 'enabled')[enabled]}!")
+
 
 def setup(bot: ExtendedClient):
     return Config(bot)
