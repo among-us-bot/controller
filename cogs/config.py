@@ -110,7 +110,7 @@ class Config(CogType):
     )
     @staff_check
     async def set_prefix(self, ctx: CommandContext):
-        await self.bot.update_config(ctx.message.guild_id, {"prefix": ctx.args[0]})
+        self.bot.update_config(ctx.message.guild_id, {"prefix": ctx.args[0]})
         await ctx.send("Updated!")
 
 
