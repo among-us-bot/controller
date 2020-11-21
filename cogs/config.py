@@ -73,9 +73,9 @@ class Config(CogType):
         matchmaking_types = config.get("matchmaking-types", {})
         if matchmaking_type not in [match_type["name"] for match_type in matchmaking_types.values()]:
             return await ctx.send("This matchmaking type doesn't exist!")
-        for match_type in matchmaking_types:
+        for match_id, match_type in matchmaking_types.items():
             if match_type["name"] == matchmaking_type:
-                del matchmaking_types[matchmaking_type]
+                del matchmaking_types[match_id]
                 config["matchmaking-types"] = matchmaking_types
                 self.bot.update_config(ctx.message.guild_id, config)
                 await ctx.send("Done! Delete the channel to finish.")
