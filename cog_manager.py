@@ -34,11 +34,10 @@ class CommandContext:
         return await self.request(route, json=kwargs)
 
     async def reply(self, content=None, **kwargs):
-        kwargs["content"] = content
         kwargs["message_reference"] = {
             "message_id": self.message.id
         }
-        await self.send(**kwargs)
+        await self.send(content, **kwargs)
 
 
 class CogManager:
