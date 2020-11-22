@@ -17,11 +17,12 @@ from re import compile, Pattern
 
 
 class CommandContext:
-    def __init__(self, message: dict, client: Client, args):
+    def __init__(self, message: dict, client: Client, args, guild_config: dict):
         self.client = client
         self.message_data = message
         self.message = MessageContext(client, self.message_data)
         self.args = args
+        self.guild_config = guild_config
 
     async def request(self, *args, **kwargs):
         return await self.client.workers.request(self.message.guild_id, *args, **kwargs)
@@ -64,7 +65,8 @@ class CogManager:
     async def process_message(self, message: dict, shard):
         if message["author"].get("bot", False):
             return
-        prefix = await self.client.get_prefix(message.get("guild_id"))
+        guild_config = self.client.get_config(message.get("guild_id"))
+        prefix = guild_config.get("prefix", self.client.default_prefix)
         if not message["content"].startswith(prefix):
             return
         content_without_prefix = message["content"][len(prefix):]
@@ -75,7 +77,7 @@ class CogManager:
             match = command_details["syntax"].fullmatch(content_without_prefix)
             if match is None:
                 continue
-            context = CommandContext(message, self.client, match.groups())
+            context = CommandContext(message, self.client, match.groups(), guild_config)
 
             # Verify checks
             for check, check_name in command_details["checks"]:
@@ -88,4 +90,6 @@ class CogManager:
             await command_details["func"](context)
             self.logger.debug("Processing command")
             return
-        self.logger.debug("Unknown command!")
+        if guild_config.get("unknown-command-messages", True):
+            message_context = MessageContext(self.client, message)
+            await message_context.send(content=f"<@{message_context.author['id']}>, invalid syntax!")
