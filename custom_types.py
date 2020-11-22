@@ -114,7 +114,8 @@ class CogType:
             command_syntax = getattr(func, "__command_syntax__", None)
             if command_syntax is not None:
                 checks = getattr(func, "__command_checks__", [])
-                self.bot.cog_manager.register_command(func, command_syntax, **getattr(func, "__command_attrs__", {}), checks=checks)
+                self.bot.cog_manager.register_command(func, command_syntax, **getattr(func, "__command_attrs__", {}),
+                                                      checks=checks)
 
             event_name = getattr(func, "__event_name__", None)
             if event_name is not None:
