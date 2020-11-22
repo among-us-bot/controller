@@ -38,6 +38,7 @@ class CommandContext:
         kwargs["message_reference"] = {
             "message_id": self.message.id
         }
+        await self.send(**kwargs)
 
 
 class CogManager:
