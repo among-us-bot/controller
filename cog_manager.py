@@ -91,5 +91,5 @@ class CogManager:
             self.logger.debug("Processing command")
             return
         if guild_config.get("unknown-command-messages", True):
-            message_context = MessageContext(self.client, message)
-            await message_context.send(content=f"<@{message_context.author['id']}>, invalid syntax!")
+            context = CommandContext(message, self.client, [], guild_config)
+            await context.send(f"<@{context.message.author['id']}>, unknown command!")
