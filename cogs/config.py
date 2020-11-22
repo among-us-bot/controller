@@ -114,9 +114,9 @@ class Config(CogType):
         await ctx.send("Updated!")
 
     @CogType.command(
-        command_syntax="config toggle unknown-command",
-        name="toggle-unknown-command",
-        usage="config toggle unknown-command",
+        command_syntax="config toggle unknown-command-messages",
+        name="toggle-unknown-command-messages",
+        usage="config toggle unknown-command-messages",
         description="Toggles unknown command messages"
     )
     @staff_check
