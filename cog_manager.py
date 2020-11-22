@@ -89,8 +89,8 @@ class CogManager:
             for check, check_name in command_details["checks"]:
                 check_result = check(context)
                 if not check_result:
-                    await context.send(f"<@{context.message.author['id']}>, you can't run this command! "
-                                       f"Check failed: `{check_name.upper()}`.")
+                    await context.reply(f"<@{context.message.author['id']}>, you can't run this command! "
+                                        f"Check failed: `{check_name.upper()}`.")
                     return
 
             await command_details["func"](context)
@@ -98,4 +98,4 @@ class CogManager:
             return
         if guild_config.get("unknown-command-messages", True):
             context = CommandContext(message, self.client, [], guild_config)
-            await context.send(f"<@{context.message.author['id']}>, unknown command!")
+            await context.reply(f"<@{context.message.author['id']}>, unknown command!")

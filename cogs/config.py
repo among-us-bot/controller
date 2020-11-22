@@ -38,9 +38,9 @@ class Config(CogType):
 
         matchmaking_types = config.get("matchmaking-types", {})
         if config.get("matchmaking-category", None) is None:
-            return await ctx.send("Please set a matchmaking category first")
+            return await ctx.reply("Please set a matchmaking category first")
         if matchmaking_type in [match_type["name"] for match_type in matchmaking_types.values()]:
-            return await ctx.send("This matchmaking type already exists!")
+            return await ctx.reply("This matchmaking type already exists!")
         route = Route("POST", "/guilds/{guild_id}/channels", guild_id=ctx.message.guild_id)
         response = await self.bot.http.request(route, json={
             "name": matchmaking_type,
@@ -72,13 +72,13 @@ class Config(CogType):
 
         matchmaking_types = config.get("matchmaking-types", {})
         if matchmaking_type not in [match_type["name"] for match_type in matchmaking_types.values()]:
-            return await ctx.send("This matchmaking type doesn't exist!")
+            return await ctx.reply("This matchmaking type doesn't exist!")
         for match_id, match_type in matchmaking_types.items():
             if match_type["name"] == matchmaking_type:
                 del matchmaking_types[match_id]
                 config["matchmaking-types"] = matchmaking_types
                 self.bot.update_config(ctx.message.guild_id, config)
-                await ctx.send("Done! Delete the channel to finish.")
+                await ctx.reply("Done! Delete the channel to finish.")
                 return
 
     @CogType.command(
@@ -124,7 +124,7 @@ class Config(CogType):
         already_enabled = self.bot.get_config(ctx.message.guild_id).get("unknown-command-messages", True)
         enabled = not already_enabled
         self.bot.update_config(ctx.message.guild_id, {"unknown-command-messages": enabled})
-        await ctx.send(f"Unknown command messages {('disabled', 'enabled')[enabled]}!")
+        await ctx.reply(f"Unknown command messages {('disabled', 'enabled')[enabled]}!")
 
 
 def setup(bot: ExtendedClient):
