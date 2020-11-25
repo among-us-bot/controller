@@ -25,7 +25,9 @@ class ExtendedClient(Client):
         self.config_table = self.database["guild_config"]
         self.whitelisted_table = self.database["whitelisted"]
 
-        self.loop.create_task(self.workers.start())
+    async def connect(self):
+        await super().connect()
+        await self.workers.start()
 
     async def get_prefix(self, guild_id: str):
         config = self.get_config(guild_id)
