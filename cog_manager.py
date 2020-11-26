@@ -97,4 +97,4 @@ class CogManager:
             return
         if guild_config.get("unknown-command-messages", True):
             context = CommandContext(message, self.client, [], guild_config)
-            await context.reply(f"Invalid command" + ", you dumb shit!" if context.message.author['id'] in [297045071457681409, 397745647723216898] else "!")
+            await context.reply(f"Invalid command" + (", you dumb shit!" if context.message.author['id'] in ['297045071457681409', '397745647723216898'] else "!"))
