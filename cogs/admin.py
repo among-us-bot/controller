@@ -66,6 +66,13 @@ class Admin(CogType):
             invited = True
         await ctx.send(f"**Whitelist status**\nWhitelisted: {whitelisted}\nInvited: {invited}")
 
+    @CogType.command("admin set analytics-url (.+)", usage="admin set analytics-url <url>")
+    @developer_check
+    async def set_analytics_url(self, ctx: CommandContext):
+        url = ctx.args[0]
+        self.bot.update_config(ctx.message.guild_id, {"analytics-url": url})
+        await ctx.send("Ok.")
+
 
 def setup(bot: ExtendedClient):
     return Admin(bot)
