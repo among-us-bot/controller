@@ -94,6 +94,7 @@ class Config(CogType):
 
     @CogType.command(
         command_syntax="config display",
+        name="display",
         usage="config display",
         description="Shows the config in YAML format"
     )

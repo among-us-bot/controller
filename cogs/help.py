@@ -6,7 +6,11 @@ from cog_manager import CommandContext
 
 
 class Help(CogType):
-    @CogType.command("help ?(\\w*)")
+    @CogType.command(
+        command_syntax="help ?(\\w*)",
+        name="help",
+        usage="help [command-name-this-format-no-categories]",
+        description="Gets a list of commands or help on a specified command")
     async def help(self, ctx: CommandContext):
         command_name = ctx.args[0]
         if command_name is None or command_name.strip() == "":
