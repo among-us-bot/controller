@@ -97,8 +97,11 @@ class CogManager:
                 if not check_result:
                     await context.reply(f"You can't run this command! Check failed: `{check_name.upper()}`.")
                     return
-
-            await command_details["func"](context)
+            try:
+                await command_details["func"](context)
+            except Exception as e:
+                self.logger.error(f"Error while processing command ({context.message.content})", exc_info=e)
+                return await context.send("Uh oh, an error occurred while running the command. Check logs for details")
             self.logger.debug("Processing command")
             return
         if guild_config.get("unknown-command-messages", True):
