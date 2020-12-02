@@ -17,6 +17,7 @@ from re import compile, Pattern
 from os import environ as env
 
 owner_ids = env["OWNER_IDS"].split(" ")
+disabled_commands = env["DISABLED_COMMANDS"].split(" ")
 
 
 class CommandContext:
@@ -87,7 +88,9 @@ class CogManager:
             if match is None:
                 continue
             context = CommandContext(message, self.client, match.groups(), guild_config)
-
+            # Check if the command is disabled
+            if command_details["name"] in disabled_commands:
+                return await context.send("This command is disabled.")
             # Verify checks
             for check, check_name in command_details["checks"]:
                 check_result = check(context)
