@@ -137,6 +137,7 @@ class Queue(CogType):
                         args, kwargs = self.bot.payloads.move_member(guild_id, to_be_moved_id, game_vc)
                         await self.bot.workers.request(guild_id, *args, **kwargs)
                         self.players_in_queue.remove(user_id)
+                        self.waiting_in_queue[guild_id].remove(player)
                     return
 
     @CogType.event("VOICE_STATE_UPDATE")
